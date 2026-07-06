@@ -117,8 +117,16 @@ jobs:
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
         cd openwrt/bin/targets/*/*
+        # 删除 packages 目录（通常不需要）
         rm -rf packages
-        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+        # 创建固件专用目录
+        mkdir -p firmware
+        # 只复制固件镜像（可根据设备扩展后缀）
+        cp *.bin *.img.gz firmware/ 2>/dev/null || true
+        # 也复制 sha256sums（可选）
+        cp sha256sums firmware/ 2>/dev/null || true
+        # 设置上传路径
+        echo "FIRMWARE=$PWD/firmware" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
     - name: Upload firmware directory
