@@ -81,6 +81,14 @@ jobs:
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
 
+    - name: Cache dl directory
+      uses: actions/cache@v4
+      with:
+        path: /workdir/openwrt/dl
+        key: ${{ runner.os }}-dl-${{ hashFiles('openwrt/feeds.conf.default', 'diy-part1.sh', 'diy-part2.sh') }}
+        restore-keys: |
+          ${{ runner.os }}-dl-
+
     - name: Download package
       id: package
       run: |
